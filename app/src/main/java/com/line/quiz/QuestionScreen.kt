@@ -34,7 +34,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.line.quiz.model.QuestionData
 import kotlinx.coroutines.delay
 
-
 @Composable
 fun QuestionScreen(
     question: QuestionData,
@@ -46,13 +45,11 @@ fun QuestionScreen(
     var timeLeft by remember { mutableStateOf(10) }
     var isTimeUp by remember { mutableStateOf(false) }
 
-
     LaunchedEffect(isTimeUp) {
         if (isTimeUp) {
             onAnswerSelected(false, 0)
         }
     }
-
 
     LaunchedEffect(Unit) {
         while (timeLeft > 0) {
@@ -61,7 +58,6 @@ fun QuestionScreen(
         }
         isTimeUp = true
     }
-
 
     Box(
         modifier = Modifier
@@ -93,21 +89,17 @@ fun QuestionScreen(
                 modifier = Modifier.padding(16.dp)
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                CountdownTimer(totalTime = 15) {
-                    isTimeUp = true
-                }
-            }
-
+            Text(
+                text = "Tempo restante: $timeLeft segundos",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-
-            // Display the answers in two rows aligned in the center
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
@@ -119,10 +111,12 @@ fun QuestionScreen(
                             isSelected = selectedAnswer == answer,
                             correctAnswer = question.correctAnswer,
                             onClick = {
-                                selectedAnswer = answer
-                                val points = if (timeLeft > 0) timeLeft else 0
-                                val isCorrect = answer == question.correctAnswer
-                                onAnswerSelected(isCorrect, points)
+                                if (!isTimeUp) {
+                                    selectedAnswer = answer
+                                    val points = if (timeLeft > 0) timeLeft else 0
+                                    val isCorrect = answer == question.correctAnswer
+                                    onAnswerSelected(isCorrect, points)
+                                }
                             }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -136,10 +130,12 @@ fun QuestionScreen(
                             isSelected = selectedAnswer == answer,
                             correctAnswer = question.correctAnswer,
                             onClick = {
-                                selectedAnswer = answer
-                                val points = if (timeLeft > 0) timeLeft else 0
-                                val isCorrect = answer == question.correctAnswer
-                                onAnswerSelected(isCorrect, points)
+                                if (!isTimeUp) {
+                                    selectedAnswer = answer
+                                    val points = if (timeLeft > 0) timeLeft else 0
+                                    val isCorrect = answer == question.correctAnswer
+                                    onAnswerSelected(isCorrect, points)
+                                }
                             }
                         )
                         Spacer(modifier = Modifier.width(8.dp))

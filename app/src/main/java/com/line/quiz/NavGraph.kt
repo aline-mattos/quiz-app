@@ -80,17 +80,17 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
     var correctAnswersCount by remember { mutableStateOf(0) }
     var playerName by remember { mutableStateOf("") }
-    var points by remember { mutableStateOf(0) }
-
+    var totalPoints by remember { mutableStateOf(0) }
 
     fun navigateToNextQuestionOrResults(index: Int, isCorrect: Boolean, points: Int) {
         if (isCorrect) {
             correctAnswersCount++
+            totalPoints += points
         }
         if (index + 1 < questions.size) {
             navController.navigate("question${index + 1}")
         } else {
-            navController.navigate("results/$correctAnswersCount/$points")
+            navController.navigate("results/$correctAnswersCount/$totalPoints")
         }
     }
 
@@ -117,10 +117,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 )
             }
         }
-        composable("results/{correctAnswersCount}/{points}") { backStackEntry ->
-            val correctAnswers = backStackEntry.arguments?.getInt("correctAnswersCount") ?: 0
-            val points = backStackEntry.arguments?.getInt("points") ?: 0
-            ResultsScreen(playerName, correctAnswers, points)
+        composable("results/{correctAnswersCount}/{totalPoints}") { backStackEntry ->
+            val correctAnswers = backStackEntry.arguments?.getString("correctAnswersCount")?.toIntOrNull() ?: 0
+            val totalPoints = backStackEntry.arguments?.getString("totalPoints")?.toIntOrNull() ?: 0
+            ResultsScreen(playerName, correctAnswers, totalPoints)
         }
     }
 }

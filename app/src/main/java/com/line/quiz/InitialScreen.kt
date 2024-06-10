@@ -35,7 +35,7 @@ fun InitialScreen(onStartQuiz: (String) -> Unit) {
         OutlinedTextField(
             value = playerName,
             onValueChange = { playerName = it },
-            label = { Text("Enter your name") },
+            label = { Text("Digite seu nome:") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -43,7 +43,7 @@ fun InitialScreen(onStartQuiz: (String) -> Unit) {
             onClick = { onStartQuiz(playerName) },
             enabled = playerName.isNotBlank()
         ) {
-            Text("Start Quiz")
+            Text("Começar Quiz")
         }
     }
 }
