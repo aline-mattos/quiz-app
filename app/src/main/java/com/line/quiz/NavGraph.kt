@@ -52,9 +52,31 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             answers = listOf("Galeões", "Tornéis", "Sicles", "Nuques"),
             correctAnswer = "Tornéis"
         ),
-        // Add more questions here
+        QuestionData(
+            title = "De qual estação de trem sai o Expresso de Hogwarts?",
+            imageUrl = "https://turismo.eurodicas.com.br/wp-content/uploads/2019/12/kings-cross-station-1.jpg",
+            answers = listOf("King's Cross", "Marleybone", "Paddington", "Euston"),
+            correctAnswer = "King's Cross"
+        ),
+        QuestionData(
+            title = "Qual feitiço Hermione ajudou Rony a aprender?",
+            imageUrl = "https://pbs.twimg.com/media/FEbXS5TXMAEOgB8.jpg",
+            answers = listOf("Wingardium Leviosa", "Expelliarmus", "Estupefaça", "Riddikulus"),
+            correctAnswer = "Wingardium Leviosa"
+        ),
+        QuestionData(
+            title = "Qual é a profissão dos pais trouxas da Hermione?",
+            imageUrl = "https://pa1.aminoapps.com/6630/175e60baa1462733a7bdb233632c2b03ad7caaec_00.gif",
+            answers = listOf("Artistas", "Médicos", "Dentistas", "Professores"),
+            correctAnswer = "Dentistas"
+        ),
+        QuestionData(
+            title = "Qual o símbolo da casa Corvinal?",
+            imageUrl = "https://allandevery.co.uk/cdn/shop/products/PBWBHPR0090-SAPP-ZOOM.jpg?v=1686924455",
+            answers = listOf("Corvo", "Águia", "Coruja", "Falcão"),
+            correctAnswer = "Águia"
+        )
     ).shuffled()
-
 
     var correctAnswersCount by remember { mutableStateOf(0) }
     var playerName by remember { mutableStateOf("") }

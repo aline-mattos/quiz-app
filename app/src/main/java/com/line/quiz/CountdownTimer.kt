@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
-
 @Composable
 fun CountdownTimer(totalTime: Int, onTimeUp: () -> Unit) {
     var timeLeft by remember { mutableStateOf(totalTime) }
@@ -27,7 +26,6 @@ fun CountdownTimer(totalTime: Int, onTimeUp: () -> Unit) {
         }
         onTimeUp()
     }
-
 
     Text(
         text = "Time left: $timeLeft",

@@ -157,7 +157,7 @@ fun AnswerButton(text: String, isSelected: Boolean, correctAnswer: String, onCli
         isSelected && text != correctAnswer -> Color.Red
         else -> Color.Blue
     }
-    
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
