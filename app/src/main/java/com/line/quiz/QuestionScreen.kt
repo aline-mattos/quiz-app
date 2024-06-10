@@ -113,9 +113,9 @@ fun QuestionScreen(
                             onClick = {
                                 if (!isTimeUp) {
                                     selectedAnswer = answer
-                                    val points = if (timeLeft > 0) timeLeft else 0
                                     val isCorrect = answer == question.correctAnswer
-                                    onAnswerSelected(isCorrect, points)
+                                    val pointsEarned = if (isCorrect && timeLeft > 0) timeLeft else 0
+                                    onAnswerSelected(isCorrect, pointsEarned)
                                 }
                             }
                         )
@@ -132,9 +132,9 @@ fun QuestionScreen(
                             onClick = {
                                 if (!isTimeUp) {
                                     selectedAnswer = answer
-                                    val points = if (timeLeft > 0) timeLeft else 0
                                     val isCorrect = answer == question.correctAnswer
-                                    onAnswerSelected(isCorrect, points)
+                                    val pointsEarned = if (isCorrect && timeLeft > 0) timeLeft else 0
+                                    onAnswerSelected(isCorrect, pointsEarned)
                                 }
                             }
                         )

@@ -3,6 +3,7 @@ package com.line.quiz
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -80,20 +81,20 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
     var correctAnswersCount by remember { mutableStateOf(0) }
     var playerName by remember { mutableStateOf("") }
-    var totalPoints by remember { mutableStateOf(0) }
+    var points by remember { mutableStateOf(0) }
+    val leaderboard = remember { mutableStateListOf<LeaderboardEntry>() }
 
-    fun navigateToNextQuestionOrResults(index: Int, isCorrect: Boolean, points: Int) {
+    fun navigateToNextQuestionOrResults(index: Int, isCorrect: Boolean, pointsEarned: Int) {
         if (isCorrect) {
             correctAnswersCount++
-            totalPoints += points
         }
+        points += pointsEarned
         if (index + 1 < questions.size) {
             navController.navigate("question${index + 1}")
         } else {
-            navController.navigate("results/$correctAnswersCount/$totalPoints")
+            navController.navigate("results/$correctAnswersCount/$points")
         }
     }
-
 
     NavHost(
         navController = navController,
@@ -103,24 +104,33 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable("initial") {
             InitialScreen(onStartQuiz = { name: String ->
                 playerName = name
+                correctAnswersCount = 0
+                points = 0
                 navController.navigate("question0")
-            })
+            },
+                onLeaderboardClicked = {
+                    navController.navigate("leaderboard")
+                }
+            )
         }
         questions.forEachIndexed { index, question ->
             composable("question$index") {
                 QuestionScreen(
                     question = question,
                     playerName = playerName,
-                    onAnswerSelected = { isCorrect, points ->
-                        navigateToNextQuestionOrResults(index, isCorrect, points)
+                    onAnswerSelected = { isCorrect, pointsEarned ->
+                        navigateToNextQuestionOrResults(index, isCorrect, pointsEarned)
                     }
                 )
             }
         }
-        composable("results/{correctAnswersCount}/{totalPoints}") { backStackEntry ->
+        composable("results/{correctAnswersCount}/{points}") { backStackEntry ->
             val correctAnswers = backStackEntry.arguments?.getString("correctAnswersCount")?.toIntOrNull() ?: 0
-            val totalPoints = backStackEntry.arguments?.getString("totalPoints")?.toIntOrNull() ?: 0
-            ResultsScreen(playerName, correctAnswers, totalPoints)
+            val points = backStackEntry.arguments?.getString("points")?.toIntOrNull() ?: 0
+            ResultsScreen(navController, playerName, correctAnswers, points, leaderboard)
+        }
+        composable("leaderboard") {
+            LeaderboardScreen(navController, leaderboard)
         }
     }
 }
