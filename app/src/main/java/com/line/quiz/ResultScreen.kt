@@ -18,11 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.line.quiz.model.LeaderboardEntry
+import com.line.quiz.repositories.LeaderboardRepository
 
 @Composable
-fun ResultsScreen(navController: NavHostController, playerName: String, correctAnswers: Int, points: Int, leaderboard: MutableList<LeaderboardEntry>) {
+fun ResultsScreen(navController: NavHostController, playerName: String, correctAnswers: Int, points: Int, leaderboardRepository: LeaderboardRepository) {
     LaunchedEffect(Unit) {
-        leaderboard.add(LeaderboardEntry(playerName, points))
+        leaderboardRepository.insertLeaderboardEntry(LeaderboardEntry(playerName = playerName, score = points))
     }
 
     Box(

@@ -5,18 +5,32 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-
-data class LeaderboardEntry(val playerName: String, val points: Int)
+import com.line.quiz.repositories.LeaderboardRepository
+import com.line.quiz.model.LeaderboardEntry
+import kotlinx.coroutines.launch
 
 @Composable
-fun LeaderboardScreen(navController: NavHostController, leaderboard: List<LeaderboardEntry>) {
-    val lastTenEntries = remember { leaderboard.takeLast(10) }
+fun LeaderboardScreen(navController: NavHostController, leaderboardRepository: LeaderboardRepository) {
+    var leaderboardEntries by remember { mutableStateOf(emptyList<LeaderboardEntry>()) }
+
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = "getLeaderboardEntries") {
+        scope.launch {
+            val entries = leaderboardRepository.getTopLeaderboardEntries()
+            leaderboardEntries = entries
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -30,9 +44,9 @@ fun LeaderboardScreen(navController: NavHostController, leaderboard: List<Leader
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(16.dp)
         )
-        lastTenEntries.sortedByDescending { it.points }.forEach { entry ->
+        leaderboardEntries.forEach { entry ->
             Text(
-                text = "${entry.playerName}: ${entry.points} points",
+                text = "${entry.playerName}: ${entry.score} points",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(8.dp)
             )

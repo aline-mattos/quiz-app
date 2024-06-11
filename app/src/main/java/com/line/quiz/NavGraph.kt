@@ -8,10 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.line.quiz.model.QuestionData
+import com.line.quiz.model.LeaderboardEntry
+import com.line.quiz.repositories.LeaderboardRepository
 
 
 @Composable
@@ -79,10 +82,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         )
     ).shuffled()
 
+    val context = LocalContext.current
     var correctAnswersCount by remember { mutableStateOf(0) }
     var playerName by remember { mutableStateOf("") }
     var points by remember { mutableStateOf(0) }
-    val leaderboard = remember { mutableStateListOf<LeaderboardEntry>() }
+    val leaderboardRepository = remember { LeaderboardRepository(context = context) }
 
     fun navigateToNextQuestionOrResults(index: Int, isCorrect: Boolean, pointsEarned: Int) {
         if (isCorrect) {
@@ -127,10 +131,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable("results/{correctAnswersCount}/{points}") { backStackEntry ->
             val correctAnswers = backStackEntry.arguments?.getString("correctAnswersCount")?.toIntOrNull() ?: 0
             val points = backStackEntry.arguments?.getString("points")?.toIntOrNull() ?: 0
-            ResultsScreen(navController, playerName, correctAnswers, points, leaderboard)
+            ResultsScreen(navController, playerName, correctAnswers, points, leaderboardRepository)
         }
         composable("leaderboard") {
-            LeaderboardScreen(navController, leaderboard)
+            LeaderboardScreen(navController, leaderboardRepository)
         }
     }
 }
