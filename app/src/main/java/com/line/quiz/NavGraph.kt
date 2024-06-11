@@ -39,7 +39,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             correctAnswer = "Nagini"
         ),
         QuestionData(
-            title = "O que você daria para ajudar alguém atacado por um dementador?",
+            title = "O que você daria a alguém atacado por um dementador?",
             imageUrl = "https://monsterlegacy.net/wp-content/uploads/2017/03/dementortrainresiz.jpg",
             answers = listOf("Cerveja Amanteigada", "Uma poção", "Bezoar", "Chocolate"),
             correctAnswer = "Chocolate"
@@ -75,7 +75,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             correctAnswer = "Dentistas"
         ),
         QuestionData(
-            title = "Qual o símbolo da casa Corvinal?",
+            title = "Qual o símbolo relacionado à casa Corvinal?",
             imageUrl = "https://allandevery.co.uk/cdn/shop/products/PBWBHPR0090-SAPP-ZOOM.jpg?v=1686924455",
             answers = listOf("Corvo", "Águia", "Coruja", "Falcão"),
             correctAnswer = "Águia"

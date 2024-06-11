@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -126,7 +127,7 @@ fun QuestionScreen(
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             ) {
                 Row {
                     shuffledAnswers.take(2).forEach { answer ->
@@ -165,6 +166,22 @@ fun QuestionScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
+                // Button at the bottom right corner
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    Button(onClick = {
+                        if (!isTimeUp) {
+                            timeLeft += 10 // Add 10 seconds
+                        }
+                    }) {
+                        Text(text = "+10s")
+                    }
+                }
+
             }
         }
     }
@@ -181,7 +198,7 @@ fun AnswerButton(text: String, isSelected: Boolean, correctAnswer: String, onCli
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(150.dp)
+            .size(120.dp)
             .background(backgroundColor, shape = RoundedCornerShape(8.dp))
             .clickable { onClick() }
             .padding(8.dp)
