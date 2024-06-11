@@ -1,5 +1,9 @@
 package com.line.quiz
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,18 +42,12 @@ import kotlinx.coroutines.delay
 fun QuestionScreen(
     question: QuestionData,
     playerName: String,
-    onAnswerSelected: (Boolean, Int) -> Unit // Boolean indicates if the answer is correct
+    onAnswerSelected: (Boolean, Int) -> Unit
 ) {
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     var shuffledAnswers by remember { mutableStateOf(question.answers.shuffled()) }
     var timeLeft by remember { mutableStateOf(10) }
     var isTimeUp by remember { mutableStateOf(false) }
-
-    LaunchedEffect(isTimeUp) {
-        if (isTimeUp) {
-            onAnswerSelected(false, 0)
-        }
-    }
 
     LaunchedEffect(Unit) {
         while (timeLeft > 0) {
@@ -57,20 +55,46 @@ fun QuestionScreen(
             timeLeft -= 1
         }
         isTimeUp = true
+        onAnswerSelected(false, 0)
+    }
+
+    val gradientOffset = remember { Animatable(1f) }
+
+    LaunchedEffect(timeLeft) {
+        gradientOffset.animateTo(
+            targetValue = 0f,
+            animationSpec = tween(durationMillis = timeLeft * 850)
+        )
+    }
+
+    val gradientColors = when {
+        timeLeft > 8 -> listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.inversePrimary)
+        timeLeft > 6 -> listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.inversePrimary)
+        timeLeft > 4 -> listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.inversePrimary)
+        timeLeft > 2 -> listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.inversePrimary)
+        else -> listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.inversePrimary)
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color.Blue, MaterialTheme.colorScheme.primary)
-                )
-            )
-            .padding(8.dp)
+        modifier = Modifier.fillMaxSize()
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = gradientColors,
+                        startY = gradientOffset.value * 900,
+                        endY = gradientOffset.value * 1000
+                    )
+                )
+        )
+
+        // Content box
         Column(
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
         ) {
             Image(
                 painter = rememberAsyncImagePainter(model = question.imageUrl),
@@ -113,9 +137,9 @@ fun QuestionScreen(
                             onClick = {
                                 if (!isTimeUp) {
                                     selectedAnswer = answer
+                                    val points = if (timeLeft > 0) timeLeft else 0
                                     val isCorrect = answer == question.correctAnswer
-                                    val pointsEarned = if (isCorrect && timeLeft > 0) timeLeft else 0
-                                    onAnswerSelected(isCorrect, pointsEarned)
+                                    onAnswerSelected(isCorrect, points)
                                 }
                             }
                         )
@@ -132,9 +156,9 @@ fun QuestionScreen(
                             onClick = {
                                 if (!isTimeUp) {
                                     selectedAnswer = answer
+                                    val points = if (timeLeft > 0) timeLeft else 0
                                     val isCorrect = answer == question.correctAnswer
-                                    val pointsEarned = if (isCorrect && timeLeft > 0) timeLeft else 0
-                                    onAnswerSelected(isCorrect, pointsEarned)
+                                    onAnswerSelected(isCorrect, points)
                                 }
                             }
                         )
@@ -151,13 +175,13 @@ fun AnswerButton(text: String, isSelected: Boolean, correctAnswer: String, onCli
     val backgroundColor = when {
         isSelected && text == correctAnswer -> Color.Green
         isSelected && text != correctAnswer -> Color.Red
-        else -> Color.Blue
+        else -> MaterialTheme.colorScheme.onPrimary
     }
 
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(150.dp) // Make it a square button
+            .size(150.dp)
             .background(backgroundColor, shape = RoundedCornerShape(8.dp))
             .clickable { onClick() }
             .padding(8.dp)

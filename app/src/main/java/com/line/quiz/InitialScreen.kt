@@ -46,7 +46,13 @@ fun InitialScreen(onStartQuiz: (String) -> Unit, onLeaderboardClicked: () -> Uni
         )
 
         Button(
-            onClick = { onStartQuiz(playerNameState.value) },
+            onClick = {
+                val playerName = playerNameState.value.trim()
+                if (playerName.isNotBlank()) {
+                    onStartQuiz(playerName)
+                }
+            },
+            enabled = playerNameState.value.isNotBlank(),
             modifier = Modifier.padding(16.dp)
         ) {
             Text("Começar Quiz")
